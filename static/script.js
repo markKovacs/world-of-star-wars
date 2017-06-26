@@ -26,36 +26,23 @@ function createModal () {
         $.ajax({
             dataType: "json",
             url: linksOfResidents[i],
-            async: false,
             success: function(response) {
-                residents.push({
-                    name: response.name,
-                    height: response.height,
-                    mass: response.mass,
-                    hair_color: response.hair_color,
-                    skin_color: response.skin_color,
-                    eye_color: response.eye_color,
-                    birth_year: response.birth_year,
-                    gender: response.gender
-                });
+
+            var name = $('<td>' + response.name + '</td>');
+            var height = $('<td>' + response.height + '</td>');
+            var mass = $('<td>' + response.mass + '</td>');
+            var hairColor = $('<td>' + response.hair_color + '</td>');
+            var skinColor = $('<td>' + response.skin_color + '</td>');
+            var eyeColor = $('<td>' + response.eye_color + '</td>');
+            var birthYear = $('<td>' + response.birth_year + '</td>');
+            var gender = $('<td>' + response.gender + '</td>');
+
+            var row = $('<tr></tr>');
+            row.append(name, height, mass, hairColor, skinColor, eyeColor, birthYear, gender);
+            table.append(row);
+            modalContent.append(table);
             }
         });
-    }
-
-    for (let i = 0; i < residents.length; i++) {
-        var name = $('<td>' + residents[i].name + '</td>');
-        var height = $('<td>' + residents[i].height + '</td>');
-        var mass = $('<td>' + residents[i].mass + '</td>');
-        var hairColor = $('<td>' + residents[i].hair_color + '</td>');
-        var skinColor = $('<td>' + residents[i].skin_color + '</td>');
-        var eyeColor = $('<td>' + residents[i].eye_color + '</td>');
-        var birthYear = $('<td>' + residents[i].birth_year + '</td>');
-        var gender = $('<td>' + residents[i].gender + '</td>');
-
-        var row = $('<tr></tr>');
-        row.append(name, height, mass, hairColor, skinColor, eyeColor, birthYear, gender);
-        table.append(row);
-        modalContent.append(table);
     }
 
     modal.show();
@@ -64,3 +51,10 @@ function createModal () {
 
 // Modal creation event listeners
 $('.residents').on('click', createModal);
+
+
+// Modal close event listener
+$('.close').on('click', function() {
+    $('#modal').hide();
+    $('#modal-content table').remove();
+});
