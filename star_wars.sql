@@ -21,10 +21,10 @@ DROP TABLE IF EXISTS public.planet_votes;
 DROP SEQUENCE IF EXISTS public.planet_votes_id_seq;
 CREATE TABLE planet_votes (
     id serial NOT NULL,
-    planet_id int,
+    planet_name varchar(50),
     account_id int,
     sub_time timestamp without time zone,
-    CONSTRAINT uk_one_vote_per_user UNIQUE (planet_id, account_id)
+    CONSTRAINT uk_one_vote_per_user UNIQUE (planet_name, account_id)
 );
 
 
@@ -41,5 +41,5 @@ INSERT INTO accounts VALUES (1, 'steve_jobs', 'pbkdf2:sha512:80000$RiM11IjO$8ca3
 SELECT pg_catalog.setval('accounts_id_seq', 1, true);
 
 
-INSERT INTO planet_votes VALUES (1, 1, 1, '2017-05-23 10:25:33');
+INSERT INTO planet_votes VALUES (1, 'Alderaan', 1, '2017-05-23 10:25:33');
 SELECT pg_catalog.setval('planet_votes_id_seq', 1, true);

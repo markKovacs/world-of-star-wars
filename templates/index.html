@@ -1,22 +1,17 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js" defer></script>
-    <script src="{{ url_for('static', filename='script.js') }}" defer></script>
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
-    <link rel="shortcut icon" type="image/png" sizes="16x16" href="{{url_for('static', filename='favicon.ico')}}">
-    <link rel="stylesheet" type="text/css" href="{{url_for('static', filename='style.css')}}">
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Document</title>
-</head>
-<body>
-    <div class="container">
+
+{% extends "layout.html" %}
+
+{% block title %}Planets{% endblock %}
+
+{% block content %}
+
+    <section class="container">
+
         <div class="row">
+
             <div class="col-sm-12" id="planets">
 
-                <h1>The World of Star Wars</h1>
+                <h2>Planets</h2>
 
                 {% if page.prev %}
                     <button type="submit" id="prev" data-prev="{{ url_for('planets', page=page.current|int - 1) }}">Previous</button>
@@ -41,11 +36,14 @@
                             <th>Water</th>
                             <th>Population</th>
                             <th>Residents</th>
+                            {% if session.user_name %}
+                            <th>Vote</th>
+                            {% endif %}
                         </tr>
                     </thead>
 
                     <tbody>
-                    {% for planet in planets %}
+                        {% for planet in planets %}
                         <tr>
                             <td>{{ planet.name }}</td>
                             <td>{{ planet.diameter }}</td>
@@ -54,24 +52,41 @@
                             <td>{{ planet.terrain }}</td>
                             <td>{{ planet.surface_water }}</td>
                             <td>{{ planet.population }}</td>
-                            <td>{% if planet.residents %}<a class="residents" id="{{ 'anchor-' + loop.index|string }}" data-residents="{{ planet.residents }}">{{ planet.residents|length }} {{ 'resident' if planet.residents|length == 1 else 'residents' }}</a>{% else %}No known residents{% endif %}</td>
+
+                            <td>
+                                {% if planet.residents %}
+                                <a class="residents" data-residents="{{ planet.residents }}">
+                                    {{ planet.residents|length }} {{ 'resident' if planet.residents|length == 1 else 'residents' }}
+                                </a>
+                                {% else %}
+                                No known residents
+                                {% endif %}
+                            </td>
+
+                            {% if session.user_name %}
+                            <td>
+                                <a class="vote-btn {{ planet.voted }}" data-planet-name="{{ planet.name }}">Vote</a>
+                            </td>
+                            {% endif %}
+
                         </tr>
-                    {% endfor %}
+                        {% endfor %}
                     </tbody>
 
                 </table>
 
             </div>
-        </div>
-    </div>
 
-    <div class="row">
+        </div>
+
+    </section>
+
+    <section class="row">
         <div id="modal">
             <div class="container" id="modal-content">
                 <span class="close">&times;</span>
             </div>
         </div>
-    </div>
+    </section>
 
-</body>
-</html>
+{% endblock %}

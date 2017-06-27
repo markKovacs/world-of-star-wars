@@ -4,7 +4,7 @@ import psycopg2
 
 
 def query(sql, parameters, fetch):
-
+    """Establish connection and run SQL statement."""
     conn = None
     try:
         conn = psycopg2.connect(config.DNS)
@@ -16,7 +16,7 @@ def query(sql, parameters, fetch):
     else:
         conn.autocommit = True
         with conn.cursor() as cursor:
-            result = run_statement(sql, parameters, fetch)
+            result = run_statement(sql, parameters, fetch, cursor)
         if result:
             return result
 
@@ -25,8 +25,8 @@ def query(sql, parameters, fetch):
             conn.close()
 
 
-def run_statement(sql, parameters, fetch):
-
+def run_statement(sql, parameters, fetch, cursor):
+    """Run an SQL statement."""
     if parameters:
         cursor.execute(sql, parameters)
     else:

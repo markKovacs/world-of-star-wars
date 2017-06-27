@@ -1,10 +1,39 @@
 
-from flask import Flask, render_template, request, url_for, jsonify, redirect
-from werkzeug.security import generate_password_hash, check_password_hash
-import requests
+from os import urandom
+
+from flask import (Flask, abort, flash, json, jsonify, redirect,
+                   render_template, request, session, url_for)
+
+import account_logic as account
+import planet_logic as planet
+import vote_logic as vote
 
 app = Flask(__name__)
+app.secret_key = urandom(24)
 
+
+# Before Requests:
+
+@app.before_request
+def check_before_request():
+    """Before request, refresh session time and check for valid request method."""
+    account.make_session_permanent(app)
+    account.check_for_valid_request()
+
+
+# Error Handlers:
+
+@app.errorhandler(404)
+def page_not_found(error):
+    return render_template('404.html'), 404
+
+
+@app.errorhandler(405)
+def not_allowed_method(error):
+    return render_template('405.html'), 405
+
+
+# Routing Endpoints:
 
 @app.route('/')
 def redirect_root():
@@ -14,40 +43,52 @@ def redirect_root():
 
 @app.route('/planets')
 def planets():
-    """Show a planets page."""
-    if request.args.get('page'):
-        page_number = request.args['page']
-        response = requests.get('http://swapi.co/api/planets/?page={}'.format(page_number)).json()
-    else:
-        page_number = '1'
-        response = requests.get('http://swapi.co/api/planets/').json()
-
-    if response.get('detail') == 'Not found':
-        return 'Page not found'
-
-    planets = response['results']
-
-    start = (int(page_number) - 1) * 10 + 1
-    end = start + len(planets) - 1
-    displayed_planets = '{} - {}'.format(start, end)
-
-    page = {
-        'current': page_number,
-        'next': response['next'],
-        'prev': response['previous'],
-        'displayed_planets': displayed_planets,
-        'total': response['count']
-        }
+    """Show requested planets page."""
+    planets, page = planet.get_planets()
 
     return render_template('index.html', planets=planets, page=page)
 
-# new1 = generate_password_hash('password1', method='pbkdf2:sha512:80000', salt_length=8)
 
-# @app.route('/_get_current_user')
-# def get_current_user():
-#     return jsonify(username=g.user.username,
-#                    email=g.user.email,
-#                    id=g.user.id)
+@app.route('/register', methods=['GET', 'POST'])
+def register():
+    if request.method == 'POST':
+        return account.register_account()
+
+    return render_template('register.html')
+
+
+@app.route('/login', methods=['GET', 'POST'])
+def login():
+    if request.method == 'POST':
+        return account.login_user()
+
+    return render_template('login.html')
+
+
+@app.route('/logout')
+def logout():
+    session.pop('user_name', None)
+    flash("Successfully logged out.", "success")
+
+    return redirect(url_for('planets'))
+
+
+# API Endpoints:
+
+
+@app.route('/api/manage-vote', methods=['POST'])
+def manage_vote():
+    vote.manage_vote()
+
+    return json.dumps({'status': 'OK'})
+
+
+@app.route('/api/vote-statistics')
+def get_vote_statistics():
+    vote_stats = vote.get_vote_statistics()
+
+    return jsonify(vote_stats=vote_stats)
+
 
 if __name__ == '__main__':
     app.run(debug=True)

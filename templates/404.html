@@ -1,0 +1,34 @@
+
+{% extends "layout.html" %}
+
+{% block title %}404{% endblock %}
+
+{% block content %}
+
+    <section class="container">
+
+        <div class="row">
+
+            <div class="col-sm-12" id="404">
+
+                <h2>Error 404</h2>
+
+                <p>Page not found.</p>
+
+                <img src="{{ url_for('static', filename='404.jpg') }}" alt="404 Image">
+
+            </div>
+
+        </div>
+
+    </section>
+
+    <section class="row">
+        <div id="modal">
+            <div class="container" id="modal-content">
+                <span class="close">&times;</span>
+            </div>
+        </div>
+    </section>
+
+{% endblock %}

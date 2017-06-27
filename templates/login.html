@@ -1,0 +1,42 @@
+
+{% extends "layout.html" %}
+
+{% block title %}Login{% endblock %}
+
+{% block content %}
+
+    <section class="container">
+
+        <div class="row">
+
+            <div class="col-sm-12" id="login">
+
+                <h2>Login</h2>
+
+                <form action="{{ url_for('login') }}" method="POST">
+
+                    <label for="user_name">User Name</label>
+                    <input type="text" name="user_name" id="user_name">
+
+                    <label for="password">Password</label>
+                    <input type="password" name="password" id="password">
+
+                    <input type="submit" value="Login">
+
+                </form>
+
+            </div>
+
+        </div>
+
+    </section>
+
+    <section class="row">
+        <div id="modal">
+            <div class="container" id="modal-content">
+                <span class="close">&times;</span>
+            </div>
+        </div>
+    </section>
+
+{% endblock %}
