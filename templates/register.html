@@ -5,13 +5,15 @@
 
 {% block content %}
 
-    <section class="container">
+    <section class="container" id="wrapper">
 
         <div class="row">
-
-            <div class="col-sm-12" id="register">
+            <div class="col-sm-3"></div>
+            <div class="col-sm-6" id="register">
 
                 <h2>Register</h2>
+
+                <p>Sign up your own account and access voting functionality.</p>
 
                 <form action="{{ url_for('register') }}" method="POST">
 
@@ -19,16 +21,17 @@
                     <input type="text" name="user_name" id="user_name" required minlength="4" maxlength="16">
 
                     <label for="password_1">Password</label>
-                    <input type="text" name="password_1" id="password_1" required minlength="4" maxlength="16">
+                    <input type="password" name="password_1" id="password_1" required minlength="4" maxlength="16">
 
                     <label for="password_2">Password Confirmation</label>
-                    <input type="text" name="password_2" id="password_2" required minlength="4" maxlength="16">
+                    <input type="password" name="password_2" id="password_2" required minlength="4" maxlength="16">
 
                     <input type="submit" value="Register">
 
                 </form>
 
             </div>
+            <div class="col-sm-3"></div>
 
         </div>
 

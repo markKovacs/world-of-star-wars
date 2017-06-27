@@ -5,7 +5,7 @@
 
 {% block content %}
 
-    <section class="container">
+    <section class="container" id="wrapper">
 
         <div class="row">
 
@@ -13,19 +13,55 @@
 
                 <h2>Planets</h2>
 
-                {% if page.prev %}
-                    <button type="submit" id="prev" data-prev="{{ url_for('planets', page=page.current|int - 1) }}">Previous</button>
-                {% endif %}
-                {% if page.next %}
-                <button type="submit" id="next" data-next="{{ url_for('planets', page=page.current|int + 1) }}">Next</button>
-                {% endif %}
-
-                <div id="table-info">
+                <!-- Pagination Bar -->
+                <div id="pagination">
                     <span>{{ page.displayed_planets }} of {{ page.total }} items</span>
+                    {% if page.next %}
+                    <button class="active" type="submit" id="next" data-page="{{ url_for('planets', page=page.current + 1) }}">Next</button>
+                    {% endif %}
+                    {% if page.prev %}
+                    <button class="active" type="submit" id="prev" data-page="{{ url_for('planets', page=page.current - 1) }}">Previous</button>
+                    {% endif %}
+
+                    {% if page.current != page.last %}
+                    <button class="active" type="submit" id="last" data-page="{{ url_for('planets', page=page.last) }}">{{ page.last }}</button>
+                        {% if (page.last - page.current) > 4 %}
+                        <span class="dots">...</span>
+                        {% endif %}
+                    {% endif %}
+
+                    {% if page.last > page.current + 3 %}
+                    <button class="active" type="submit" data-page="{{ url_for('planets', page=page.current + 3) }}">{{ page.current + 3 }}</button>
+                    {% endif %}
+                    {% if page.last > page.current + 2 %}
+                    <button class="active" type="submit" data-page="{{ url_for('planets', page=page.current + 2) }}">{{ page.current + 2 }}</button>
+                    {% endif %}
+                    {% if page.last > page.current + 1 %}
+                    <button class="active" type="submit" data-page="{{ url_for('planets', page=page.current + 1) }}">{{ page.current + 1 }}</button>
+                    {% endif %}
+
+                    <button style="background-color: gray;" id="current-page" disabled type="submit">{{ page.current }}</button>
+
+                    {% if 1 < page.current - 1 %}
+                    <button class="active" type="submit" data-page="{{ url_for('planets', page=page.current - 1) }}">{{ page.current - 1 }}</button>
+                    {% endif %}
+                    {% if 1 < page.current - 2 %}
+                    <button class="active" type="submit" data-page="{{ url_for('planets', page=page.current - 2) }}">{{ page.current - 2 }}</button>
+                    {% endif %}
+                    {% if 1 < page.current - 3 %}
+                    <button class="active" type="submit" data-page="{{ url_for('planets', page=page.current - 3) }}">{{ page.current - 3 }}</button>
+                    {% endif %}
+
+                    {% if 1 != page.current %}
+                        {% if (page.current - 1) > 4 %}
+                        <span class="dots">...</span>
+                        {% endif %}
+                    <button class="active" type="submit" id="first" data-page="{{ url_for('planets', page=1) }}">1</button>
+                    {% endif %}
                 </div>
 
+                <!-- Table -->
                 <table>
-
                     <thead>
                         <tr>
                             <th>Name</th>
@@ -41,7 +77,6 @@
                             {% endif %}
                         </tr>
                     </thead>
-
                     <tbody>
                         {% for planet in planets %}
                         <tr>
@@ -55,24 +90,23 @@
 
                             <td>
                                 {% if planet.residents %}
-                                <a class="residents" data-residents="{{ planet.residents }}">
+                                <a class="residents" data-residents="{{ planet.residents }}" data-planet-name="{{ planet.name }}">
                                     {{ planet.residents|length }} {{ 'resident' if planet.residents|length == 1 else 'residents' }}
                                 </a>
                                 {% else %}
-                                No known residents
+                                N/A
                                 {% endif %}
                             </td>
 
                             {% if session.user_name %}
-                            <td>
-                                <a class="vote-btn {{ planet.voted }}" data-planet-name="{{ planet.name }}">Vote</a>
+                            <td class="vote-td">
+                                <a class="vote-btn {{ planet.voted }}" data-planet-name="{{ planet.name }}">✔</a>
                             </td>
                             {% endif %}
 
                         </tr>
                         {% endfor %}
                     </tbody>
-
                 </table>
 
             </div>
@@ -81,6 +115,7 @@
 
     </section>
 
+    <!-- Modal Section -->
     <section class="row">
         <div id="modal">
             <div class="container" id="modal-content">
