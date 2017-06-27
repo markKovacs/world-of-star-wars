@@ -50,6 +50,7 @@ def planets():
 
 
 @app.route('/register', methods=['GET', 'POST'])
+@account.not_loggedin
 def register():
     if request.method == 'POST':
         return account.register_account()
@@ -58,6 +59,7 @@ def register():
 
 
 @app.route('/login', methods=['GET', 'POST'])
+@account.not_loggedin
 def login():
     if request.method == 'POST':
         return account.login_user()
@@ -66,6 +68,7 @@ def login():
 
 
 @app.route('/logout')
+@account.login_required
 def logout():
     session.pop('user_name', None)
     flash("Successfully logged out.", "success")
@@ -77,6 +80,7 @@ def logout():
 
 
 @app.route('/api/manage-vote', methods=['POST'])
+@account.login_required
 def manage_vote():
     vote.manage_vote()
 

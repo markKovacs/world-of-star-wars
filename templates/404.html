@@ -5,7 +5,7 @@
 
 {% block content %}
 
-    <section class="container">
+    <section class="container" id="wrapper">
 
         <div class="row">
 
@@ -15,7 +15,7 @@
 
                 <p>Page not found.</p>
 
-                <img src="{{ url_for('static', filename='404.jpg') }}" alt="404 Image">
+                <img class="big" src="{{ url_for('static', filename='404.jpg') }}" alt="404 Image">
 
             </div>
 

@@ -308,3 +308,11 @@ button, table {
     box-shadow: none;
     background-color: #4A4A4A;
 }
+
+.big {
+    display: block;
+    width: 500px;
+    margin: 20px auto;
+    border-radius: 20px;
+    border: 3px dashed gray;
+}
