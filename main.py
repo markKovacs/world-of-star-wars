@@ -92,7 +92,3 @@ def get_vote_statistics():
     vote_stats = vote.get_vote_statistics()
 
     return jsonify(vote_stats=vote_stats)
-
-
-if __name__ == '__main__':
-    app.run(debug=True)
