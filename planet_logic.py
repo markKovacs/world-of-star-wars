@@ -10,7 +10,10 @@ def get_planets():
     """Get requested planet page from SWAPI."""
 
     if request.args.get('page'):
-        page_number = int(request.args['page'])
+        try:
+            page_number = int(request.args['page'])
+        except ValueError:
+            abort(404)
         response = requests.get('http://swapi.co/api/planets/?page={}'.format(page_number)).json()
     else:
         page_number = 1
@@ -25,7 +28,7 @@ def get_planets():
         if planets[i]['diameter'] != 'unknown':
             planets[i]['diameter'] = '{:,} km'.format(int(planets[i]['diameter']))
         if planets[i]['surface_water'] != 'unknown':
-            planets[i]['surface_water'] = planets[i]['surface_water'] + ' %'
+            planets[i]['surface_water'] = planets[i]['surface_water'] + '%'
         if planets[i]['population'] != 'unknown':
             planets[i]['population'] = '{:,}'.format(int(planets[i]['population']))
 

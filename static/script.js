@@ -7,6 +7,8 @@ $('#pagination').on('click', function(event) {
 
 // Modal creation - show residents of planet
 function createModal () {
+    $('#modal-content h2').remove();
+    $('#modal-content table').remove();
 
     var linksOfResidents = $(event.target).data('residents');
     var clickedPlanetName = $(event.target).data('planet-name');
@@ -42,8 +44,8 @@ function createModal () {
             success: function(response) {
 
                 var name = $('<td>' + response.name + '</td>');
-                var height = $('<td>' + response.height + '</td>');
-                var mass = $('<td>' + response.mass + '</td>');
+                var height = $('<td>' + (response.height !== 'unknown' ? ((response.height / 100) + 'm' ) : response.height) + '</td>');
+                var mass = $('<td>' + response.mass + (response.mass !== 'unknown' ? 'kg' : '') + '</td>');
                 var hairColor = $('<td>' + response.hair_color + '</td>');
                 var skinColor = $('<td>' + response.skin_color + '</td>');
                 var eyeColor = $('<td>' + response.eye_color + '</td>');
@@ -68,16 +70,16 @@ $('.residents').on('click', createModal);
 
 // Modal close event listener
 $('.close').on('click', function() {
-    $('#modal').hide();
-    $('#modal-content h2').remove();
     $('#modal-content table').remove();
+    $('#modal-content h2').remove();
+    $('#modal').hide();
 });
 
 $(window).on('click', function(event) {
     if ($(event.target).attr('id') === 'modal') {
-        $('#modal').hide();
-        $('#modal-content h2').remove();
         $('#modal-content table').remove();
+        $('#modal-content h2').remove();
+        $('#modal').hide();
     }
 })
 
@@ -109,6 +111,8 @@ $('.vote-btn').on('click', votePlanet);
 
 // Show Vote Statistics
 function showVoteStats () {
+    $('#modal-content h2').remove();
+    $('#modal-content table').remove();
 
     var modal = $('#modal');
     var modalContent = $('#modal-content');
