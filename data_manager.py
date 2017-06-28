@@ -4,8 +4,6 @@ import urllib
 
 import psycopg2
 
-import config
-
 
 def query(sql, parameters, fetch):
     """Establish connection and run SQL statement."""
