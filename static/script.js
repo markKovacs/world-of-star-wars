@@ -1,7 +1,8 @@
 
 // Pagination Event Listeners
 $('#pagination').on('click', function(event) {
-    window.location.replace($(event.target).data('page'));
+    if ($(event.target).attr('id') !== 'pagination')
+        window.location.replace($(event.target).data('page'));
 })
 
 
