@@ -7,7 +7,7 @@ import planet_logic as planet
 import vote_logic as vote
 
 app = Flask(__name__)
-app.secret_key = "fixed_secret_key"
+app.secret_key = 'fixed_secret_key'
 
 
 # Before Requests:

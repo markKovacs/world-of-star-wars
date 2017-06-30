@@ -1,4 +1,7 @@
 
+import os
+import urllib
+
 import psycopg2
 
 

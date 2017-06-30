@@ -6,7 +6,7 @@ var modalContent = $('#modal-content');
 
 // Pagination Event Listeners
 $('#pagination').on('click', function(event) {
-    if ($(event.target).attr('id') !== 'pagination'){
+    if ($(event.target).attr('id') !== 'pagination') {
         window.location.replace($(event.target).data('page'));
     }
 })
