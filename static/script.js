@@ -30,8 +30,11 @@ function showResidents () {
             <th>Birth Year</th>
             <th>Gender</th>
         </tr>
-        <tr id="loading-table">
+        <tr class="loading-table">
             <td colspan="8">Table content is loading...</td>
+        </tr>
+        <tr class="loading-table">
+            <td colspan="8"><img src="/static/loading.gif" alt="loading"></td>
         </tr>
     `);
     modalContent.append(table);
@@ -41,6 +44,7 @@ function showResidents () {
     var linksOfResidents = $(event.target).data('residents');
     linksOfResidents = linksOfResidents.replace(/\[(.*?)\]/g,"$1");
     linksOfResidents = linksOfResidents.replace(/'/g, '');
+    linksOfResidents = linksOfResidents.replace("http" , "https");
     linksOfResidents = linksOfResidents.split(', ');
 
     var deferredObjects = new Array();
@@ -70,7 +74,7 @@ function showResidents () {
     }
 
     $.when.apply($, deferredObjects).done(function() {
-        $('#loading-table').remove();
+        $('.loading-table').remove();
         table.append(residentRows);
     });
 }
@@ -134,6 +138,9 @@ function showVoteStats () {
         <tr id="loading-table">
             <td colspan="8">Table content is loading...</td>
         </tr>
+        <tr class="loading-table">
+            <td colspan="8"><img src="/static/loading.gif" alt="loading"></td>
+        </tr>
     `);
     modalContent.append(table);
     modal.show();
@@ -153,7 +160,7 @@ function showVoteStats () {
                 `);
             }
 
-            $('#loading-table').remove();
+            $('.loading-table').remove();
             table.append(voteRows);
         }
     });
