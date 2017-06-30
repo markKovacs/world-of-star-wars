@@ -316,3 +316,8 @@ button, table {
     border-radius: 20px;
     border: 3px dashed gray;
 }
+
+#loading-table {
+    text-align: center;
+    font-size: 2em;
+}

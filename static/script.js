@@ -1,4 +1,9 @@
 
+// Globals
+var modal = $('#modal');
+var modalContent = $('#modal-content');
+
+
 // Pagination Event Listeners
 $('#pagination').on('click', function(event) {
     if ($(event.target).attr('id') !== 'pagination'){
@@ -8,69 +13,72 @@ $('#pagination').on('click', function(event) {
 
 
 // Modal creation - show residents of planet
-function createModal () {
-    $('#modal-content h2').remove();
-    $('#modal-content table').remove();
+function showResidents () {
 
-    var linksOfResidents = $(event.target).data('residents');
     var clickedPlanetName = $(event.target).data('planet-name');
+    modalContent.append($(`<h2>Residents of ${clickedPlanetName}</h2>`));
+
+    var table = $('<table></table>');
+    table.append(`
+        <tr>
+            <th>Name</th>
+            <th>Height</th>
+            <th>Mass</th>
+            <th>Hair Color</th>
+            <th>Skin Color</th>
+            <th>Eye Color</th>
+            <th>Birth Year</th>
+            <th>Gender</th>
+        </tr>
+        <tr id="loading-table">
+            <td colspan="8">Table content is loading...</td>
+        </tr>
+    `);
+    modalContent.append(table);
+    modal.show();
+
+    // Get URLs for residents of selected planet
+    var linksOfResidents = $(event.target).data('residents');
     linksOfResidents = linksOfResidents.replace(/\[(.*?)\]/g,"$1");
     linksOfResidents = linksOfResidents.replace(/'/g, '');
     linksOfResidents = linksOfResidents.split(', ');
 
-    var modal = $('#modal');
-    var modalContent = $('#modal-content');
-    modalContent.append($('<h2>Residents of ' + clickedPlanetName + '</h2>'))
-    
-    var table = $('<table></table>');
+    var deferredObjects = new Array();
+    var residentRows = new Array();
 
-    var nameTitle = $('<th>Name</th>');
-    var heightTitle = $('<th>Height</th>');
-    var massTitle = $('<th>Mass</th>');
-    var hairColorTitle = $('<th>Hair Color</th>');
-    var skinColorTitle = $('<th>Skin Color</th>');
-    var eyeColorTitle = $('<th>Eye Color</th>');
-    var birthYearTitle = $('<th>Birth Year</th>');
-    var genderTitle = $('<th>Gender</th>');
-
-    var rowTitle = $('<tr></tr>');
-    rowTitle.append(nameTitle, heightTitle, massTitle, hairColorTitle,
-                    skinColorTitle, eyeColorTitle, birthYearTitle, genderTitle);
-    table.append(rowTitle);
-
-    var residents = new Array;
     for (let i = 0; i < linksOfResidents.length; i++) {
-        $.ajax({
-            dataType: "json",
-            url: linksOfResidents[i],
-            success: function(response) {
-
-                var name = $('<td>' + response.name + '</td>');
-                var height = $('<td>' + (response.height !== 'unknown' ? ((response.height / 100) + 'm' ) : response.height) + '</td>');
-                var mass = $('<td>' + response.mass + (response.mass !== 'unknown' ? 'kg' : '') + '</td>');
-                var hairColor = $('<td>' + response.hair_color + '</td>');
-                var skinColor = $('<td>' + response.skin_color + '</td>');
-                var eyeColor = $('<td>' + response.eye_color + '</td>');
-                var birthYear = $('<td>' + response.birth_year + '</td>');
-                var gender = $('<td>' + response.gender + '</td>');
-
-                var row = $('<tr></tr>');
-                row.append(name, height, mass, hairColor, skinColor, eyeColor, birthYear, gender);
-                table.append(row);
-                modalContent.append(table);
-            }
-        });
+        deferredObjects.push(
+            $.ajax({
+                dataType: "json",
+                url: linksOfResidents[i],
+                success: function(response) {
+                    residentRows.push(`
+                        <tr>
+                            <td>${response.name}</td>
+                            <td>${response.height !== 'unknown' ? response.height / 100 + 'm' : response.height}</td>
+                            <td>${response.mass}${response.mass !== 'unknown' ? 'kg' : ''}</td>
+                            <td>${response.hair_color}</td>
+                            <td>${response.skin_color}</td>
+                            <td>${response.eye_color}</td>
+                            <td>${response.birth_year}</td>
+                            <td>${response.gender}</td>
+                        </tr>
+                    `);
+                }
+            })
+        );
     }
 
-    modal.show();
+    $.when.apply($, deferredObjects).done(function() {
+        $('#loading-table').remove();
+        table.append(residentRows);
+    });
 }
 
-
-// Modal creation event listeners
-$('.residents').on('click', createModal);
+$('.residents').on('click', showResidents);
 
 
-// Modal close event listener
+// Modal Closing Event Listeners
 $('.close').on('click', function() {
     $('#modal-content table').remove();
     $('#modal-content h2').remove();
@@ -86,7 +94,7 @@ $(window).on('click', function(event) {
 })
 
 
-// Voting functionality
+// Voting Functionality
 function votePlanet () {
 
     var clicked = $(event.target);
@@ -97,9 +105,10 @@ function votePlanet () {
         data: {
             planet_name: planetName
         },
+        dataType: 'json',
         method: 'POST',
         success: function(response) {
-            console.log(JSON.parse(response));
+            console.log(response);
             clicked.toggleClass('voted');
         },
         error: function(error) {
@@ -113,37 +122,41 @@ $('.vote-btn').on('click', votePlanet);
 
 // Show Vote Statistics
 function showVoteStats () {
-    $('#modal-content h2').remove();
-    $('#modal-content table').remove();
 
-    var modal = $('#modal');
-    var modalContent = $('#modal-content');
     modalContent.append($('<h2>Vote Statistics</h2>'))
     var table = $('<table></table>');
 
-    var planetNameTitle = $('<th>Planet Name</th>');
-    var voteCountTitle = $('<th>Vote Count</th>');
+    table.append(`
+        <tr>
+            <th>Planet Name</th>
+            <th>Vote Count</th>
+        </tr>
+        <tr id="loading-table">
+            <td colspan="8">Table content is loading...</td>
+        </tr>
+    `);
+    modalContent.append(table);
+    modal.show();
 
-    var rowTitle = $('<tr></tr>');
-    rowTitle.append(planetNameTitle, voteCountTitle);
-    table.append(rowTitle);
+    voteRows = new Array();
 
     $.ajax({
         url: '/api/vote-statistics',
         dataType: 'json',
         success: function(response) {
             for (let i = 0; i < response.vote_stats.length; i++) {
-                var planetName = $('<td>' + response.vote_stats[i][0] + '</td>');
-                var voteCount = $('<td>' + response.vote_stats[i][1] + '</td>');
-                var row = $('<tr></tr>');
-                row.append(planetName, voteCount);
-                table.append(row);
-                modalContent.append(table);
+                voteRows.push(`
+                    <tr>
+                        <td>${response.vote_stats[i][0]}</td>
+                        <td>${response.vote_stats[i][1]}</td>
+                    </tr>
+                `);
             }
+
+            $('#loading-table').remove();
+            table.append(voteRows);
         }
     });
-
-    modal.show();
 }
 
 $('#stats-menu').on('click', showVoteStats);
