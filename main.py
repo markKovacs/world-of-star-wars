@@ -1,6 +1,4 @@
 
-from os import urandom
-
 from flask import (Flask, abort, flash, json, jsonify, redirect,
                    render_template, request, session, url_for)
 
@@ -9,7 +7,7 @@ import planet_logic as planet
 import vote_logic as vote
 
 app = Flask(__name__)
-app.secret_key = urandom(24)
+app.secret_key = "fixed_secret_key"
 
 
 # Before Requests:
@@ -92,7 +90,3 @@ def get_vote_statistics():
     vote_stats = vote.get_vote_statistics()
 
     return jsonify(vote_stats=vote_stats)
-
-
-if __name__ == '__main__':
-    app.run(debug=True)
