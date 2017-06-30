@@ -135,7 +135,7 @@ function showVoteStats () {
             <th>Planet Name</th>
             <th>Vote Count</th>
         </tr>
-        <tr id="loading-table">
+        <tr class="loading-table">
             <td colspan="8">Table content is loading...</td>
         </tr>
         <tr class="loading-table">
