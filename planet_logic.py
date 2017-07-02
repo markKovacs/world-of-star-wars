@@ -14,10 +14,10 @@ def get_planets():
             page_number = int(request.args['page'])
         except ValueError:
             abort(404)
-        response = requests.get('http://swapi.co/api/planets/?page={}'.format(page_number)).json()
+        response = requests.get('https://swapi.co/api/planets/?page={}'.format(page_number)).json()
     else:
         page_number = 1
-        response = requests.get('http://swapi.co/api/planets/').json()
+        response = requests.get('https://swapi.co/api/planets/').json()
 
     if response.get('detail') == 'Not found':
         return abort(404)

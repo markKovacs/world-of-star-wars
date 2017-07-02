@@ -5,10 +5,8 @@ var modalContent = $('#modal-content');
 
 
 // Pagination Event Listeners
-$('#pagination').on('click', function(event) {
-    if ($(event.target).hasClass('active')){
-        window.location.replace($(event.target).data('page'));
-    }
+$('#pagination').on('click', '.active', function(event) {
+    window.location.replace($(event.target).data('page'));
 })
 
 
