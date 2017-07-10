@@ -13,7 +13,7 @@ $('#pagination').on('click', function(event) {
 
 
 // Modal creation - show residents of planet
-function showResidents () {
+function showResidents (event) {
 
     var clickedPlanetName = $(event.target).data('planet-name');
     modalContent.append($(`<h2>Residents of ${clickedPlanetName}</h2>`));
@@ -79,7 +79,9 @@ function showResidents () {
     });
 }
 
-$('.residents').on('click', showResidents);
+$('.residents').on('click', function(event) {
+    showResidents(event);
+});
 
 
 // Modal Closing Event Listeners
