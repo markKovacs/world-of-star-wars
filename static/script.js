@@ -44,7 +44,7 @@ function showResidents (event) {
     var linksOfResidents = $(event.target).data('residents');
     linksOfResidents = linksOfResidents.replace(/\[(.*?)\]/g,"$1");
     linksOfResidents = linksOfResidents.replace(/'/g, '');
-    linksOfResidents = linksOfResidents.replace(/http/g , "https");
+    // linksOfResidents = linksOfResidents.replace(/http/g , "https");
     linksOfResidents = linksOfResidents.split(', ');
 
     var deferredObjects = new Array();
